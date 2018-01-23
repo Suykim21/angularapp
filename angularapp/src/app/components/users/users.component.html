@@ -1,3 +1,49 @@
-<p>
-  users works!
-</p>
+<h2>Users</h2>
+<button [disabled]="!enableAdd" class="btn btn-block mb-3" [ngClass]="currentClasses">Add New User</button>
+<!-- ? -> its okay if it doesnt exist -->
+<ul class="list-unstyled" *ngIf="loaded && users?.length > 0">
+
+  <!-- class binding & style binding-->
+  <li class="card card-body mb-2" *ngFor="let user of users" [class.bg-light]="user.isActive" [style.border-color]="user.isActive ? 'green' : ''">
+
+    <div class="row">
+
+      <div class="col-sm-4">
+
+        <!-- 3 ways to do property binding! -->
+        <img *ngIf="user.image" [src]="user.image" class="img-fluid" alt="">
+        <!-- <img *ngIf="user.image" src={{user.image}} class="img-fluid" alt=""> -->
+        <!-- <img *ngIf="user.image" bind-src="user.image" class="img-fluid" alt=""> -->
+
+      </div>
+
+      <div class="col-sm-8">
+
+        <!-- style binding & pipe -->
+        <h3 [ngStyle]="currentStyles">{{user.firstName | uppercase }} {{user.lastName | lowercase }} </h3>
+
+        <!-- shows records when it has age and address properties -->
+        <ul class="list-group" *ngIf="showExtended && user.age && user.address">
+          <li class="list-group-item">Age: {{ user.age }}</li>
+          <li class="list-group-item">Address: {{ user.address.street }} {{ user.address.city }} {{ user.address.state }}</li>
+
+          <!-- pipe currency:"US":"symbol" or "code" -->
+          <!-- pipe percent: 1 = 100% -->
+          <li class="list-group-item">Balance: {{ user.balance | currency: "GBP":"code" }} until {{ .5 | percent }}</li>
+
+          <!--  pipe date - longDate shortDate fullDate longTime shortTime -->
+          <li class="list-group-item">Joined: {{user.registered | date:"longDate"}}</li>
+
+          <!-- pipe number - 2.4 = 2 digits 4 decimal places  -->
+          <!-- ngNonBindable - disables string interpolation -->
+          <li class="list-group-item">{{ 5 | number: "2.4"}}</li>
+        </ul>
+      </div>
+    </div>
+  </li>
+</ul>
+
+<!-- <ng-template #noUsers><h4>No Users Found</h4></ng-template> -->
+<h4 *ngIf="users?.length == 0">No Users Found</h4>
+
+<h4 *ngIf="!loaded">Loading Users...</h4>
